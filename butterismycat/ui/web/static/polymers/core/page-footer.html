@@ -1,0 +1,35 @@
+<dom-module id="page-footer">
+    <template>
+        <style>
+            .fixed-bottom{
+                position: fixed;
+                width: 100%;
+                bottom: 0;
+                z-index: 1030;
+            }
+        </style>
+
+        <footer class="page-footer teal fixed-bottom" style="padding-top: 0;">
+            <div class="footer-copyright teal">
+                <div class="container">
+                    &copy; [[year]] butterismycat.com
+                    <a class="grey-text text-lighten-4 right" href="/">butterismycat</a>
+                </div>
+            </div>
+        </footer>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'page-footer',
+        properties: {
+            year: String
+        },
+
+        ready: function() {
+            var d = new Date();
+            this.year = d.getFullYear().toString();
+        }
+    });
+</script>
