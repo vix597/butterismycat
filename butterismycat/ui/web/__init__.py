@@ -22,11 +22,11 @@ def register_component(path):
     import importlib
     views_path = path + '.views'
     module = importlib.import_module(views_path)
-    APP.register_blueprint(module.blueprint)
+    APP.register_blueprint(module.BLUEPRINT)
 
 # Load the views
-register_component('butterismycat.core')
-register_component('butterismycat.vendor')
+register_component('butterismycat.ui.web.core')
+register_component('butterismycat.ui.web.vendor')
 
 def run(debug=False, port=5001):
     '''

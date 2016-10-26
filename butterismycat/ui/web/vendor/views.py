@@ -5,7 +5,7 @@ directory
 
 import os
 from flask import Blueprint, send_from_directory, abort
-from werkzeug.utils import secure_filename
+from werkzeug.urls import url_fix
 
 BOWER_COMPONENTS = os.path.abspath(os.path.join(__file__, "..", "..", "bower_components"))
 
@@ -18,12 +18,9 @@ def serve(filename):
     url_prefix is /vendor
     '''
 
-    print("BOWER_COMPONENTS: ", BOWER_COMPONENTS)
-    print("Serve: ", filename)
-
     if '..' in filename:
         abort(404)
 
-    filename = secure_filename(filename)
+    safe_url = url_fix(filename)
 
-    return send_from_directory(BOWER_COMPONENTS, filename)
+    return send_from_directory(BOWER_COMPONENTS, safe_url)
