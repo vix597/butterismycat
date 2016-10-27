@@ -2,9 +2,14 @@
 ButterIsMyCat web server
 '''
 
+import os
 from flask import Flask, g
 
 APP = Flask(__name__)
+APP.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB
+
+UPLOAD_FOLDER = os.path.join(APP.static_folder, "content")
+ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
 @APP.before_request
 def global_before_request():
@@ -12,7 +17,8 @@ def global_before_request():
     Called before each web request.
     Don't put anything crazy in here
     '''
-    g.db = None
+    g.upload_folder = UPLOAD_FOLDER
+    g.allowed_extensions = ALLOWED_EXTENSIONS
 
 def register_component(path):
     '''
@@ -27,6 +33,7 @@ def register_component(path):
 # Load the views
 register_component('butterismycat.ui.web.core')
 register_component('butterismycat.ui.web.vendor')
+register_component('butterismycat.ui.web.admin')
 
 def run(debug=False, port=5001):
     '''
