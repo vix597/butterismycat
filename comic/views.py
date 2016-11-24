@@ -10,9 +10,13 @@ from .models import Comic
 
 def index(request):
     '''
-    Home page
+    Home page and load most recent comic
     '''
-    latest_comic = Comic.objects.latest('pub_date')
+    try:
+        latest_comic = Comic.objects.latest('pub_date')
+    except ObjectDoesNotExist:
+        latest_comic = None
+
     template = loader.get_template('comic/index.html')
     context = {
         'comic': latest_comic
@@ -24,7 +28,11 @@ def archive(request):
     '''
     Comic archive
     '''
-    comics = Comic.objects.order_by('-pub_date') # Puts the newest first
+    try:
+        comics = Comic.objects.order_by('-pub_date') # Puts the newest first
+    except ObjectDoesNotExist:
+        comics = []
+
     template = loader.get_template('comic/archive.html')
     context = {
         'comics': comics
@@ -47,3 +55,37 @@ def comic(request, comic_id):
     }
 
     return HttpResponse(template.render(context, request))
+
+def oldest(request):
+    '''
+    Get the oldest comic
+    '''
+    try:
+        oldest_comic = Comic.objects.order_by('pub_date')
+    except ObjectDoesNotExist:
+        oldest_comic = None
+
+    template = loader.get_template('comic/index.html')
+    context = {
+        'comic': oldest_comic
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def next(request, current_id):
+    '''
+    Get the next comic
+    '''
+    pass
+
+def prev(request, current_id):
+    '''
+    Get the previous comic
+    '''
+    pass
+
+def random(request):
+    '''
+    Get a random comic
+    '''
+    pass

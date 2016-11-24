@@ -1,6 +1,14 @@
 {% if comic %}
     <h1>{{ comic.title }}</h1>
-    <a href="/comic/{{ comic.id }}/">Permalink</a>
+    <img src="{{ comic.image.url }}"/>
+    <br>
+    <a href="">&lt;&lt; Prev</a>&nbsp;&nbsp;<a href="">Next &gt;&gt;</a>
+    <br>
+    <a href="">&lt;&lt;&lt; Oldest</a>&nbsp;&nbsp;<a href="/">Newest &gt;&gt;&gt;</a>
+    <br>
+    <a href="">Random</a>
+    <br>
+    <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
 {% else %}
     <p>Could not find the requested comic</p>
 {% endif %}
