@@ -5,6 +5,7 @@ bower_components/
 bugreport.txt
 web.cfg.json
 coverage/
+media/
 
 # Mac Filesystem garbage
 .DS_Store*

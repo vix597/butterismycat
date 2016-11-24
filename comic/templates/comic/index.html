@@ -1,0 +1,6 @@
+{% if comic %}
+    <h1>{{ comic.title }}</h1>
+    <a href="/comic/{{ comic.id }}/">Permalink</a>
+{% else %}
+    <p>Could not find the requested comic</p>
+{% endif %}
