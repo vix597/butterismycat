@@ -2,7 +2,9 @@
 Views for comic app
 '''
 
-from django.http import HttpResponse
+import random
+
+from django.http import HttpResponse, Http404
 from django.template import loader
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -61,7 +63,7 @@ def oldest(request):
     Get the oldest comic
     '''
     try:
-        oldest_comic = Comic.objects.order_by('pub_date')
+        oldest_comic = Comic.objects.order_by('pub_date')[0]
     except ObjectDoesNotExist:
         oldest_comic = None
 
@@ -72,20 +74,91 @@ def oldest(request):
 
     return HttpResponse(template.render(context, request))
 
-def next(request, current_id):
+def next_comic(request, current_id):
     '''
     Get the next comic
     '''
-    pass
+    try:
+        comics = Comic.objects.order_by("pub_date")
+    except ObjectDoesNotExist:
+        comics = []
 
-def prev(request, current_id):
+    current_idx = None
+    for idx, cur_comic in enumerate(comics):
+        if cur_comic.id == current_id:
+            current_idx = idx
+            break
+
+    if current_idx is None:
+        raise Http404("Error retrieving next comic. Current comic not found.")
+
+    try:
+        nxt_comic = comics[current_idx + 1]
+    except IndexError:
+        # Already at the most recent comic
+        return HttpResponse()
+
+    template = loader.get_template('comic/index.html')
+    context = {
+        'comic': nxt_comic
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def prev_comic(request, current_id):
     '''
     Get the previous comic
     '''
-    pass
+    try:
+        comics = Comic.objects.order_by("-pub_date")
+    except ObjectDoesNotExist:
+        comics = []
 
-def random(request):
+    current_idx = None
+    for idx, cur_comic in enumerate(comics):
+        if cur_comic.id == current_id:
+            current_idx = idx
+            break
+
+    if current_idx is None:
+        raise Http404("Error retrieving previous comic. Current comic not found.")
+
+    try:
+        prv_comic = comics[current_idx + 1]
+    except IndexError:
+        # Already at the oldest comic
+        return HttpResponse()
+
+    template = loader.get_template('comic/index.html')
+    context = {
+        'comic': prv_comic
+    }
+
+    return HttpResponse(template.render(context, request))
+
+def random_comic(request):
     '''
     Get a random comic
     '''
-    pass
+    random.seed(None) #Uses current system time
+    r = random.randint(0, (Comic.objects.count() - 1))
+
+    try:
+        comics = Comic.objects.order_by("-pub_date")
+    except ObjectDoesNotExist:
+        comics = []
+
+    if len(comics) == 0:
+        raise Http404("Cannot get random comic. No comics found.")
+
+    try:
+        rnd_comic = comics[r]
+    except IndexError:
+        rnd_comic = comics[0]
+
+    template = loader.get_template('comic/index.html')
+    context = {
+        'comic': rnd_comic
+    }
+
+    return HttpResponse(template.render(context, request))

@@ -1,13 +1,25 @@
 {% if comic %}
     <h1>{{ comic.title }}</h1>
     <img src="{{ comic.image.url }}"/>
+    
     <br>
-    <a href="">&lt;&lt; Prev</a>&nbsp;&nbsp;<a href="">Next &gt;&gt;</a>
+    
+    <a href="{% url 'comic:prev' comic.id %}">&lt;&lt; Prev</a>
+    &nbsp;&nbsp;
+    <a href="{% url 'comic:next' comic.id %}">Next &gt;&gt;</a>
+    
     <br>
-    <a href="">&lt;&lt;&lt; Oldest</a>&nbsp;&nbsp;<a href="/">Newest &gt;&gt;&gt;</a>
+    
+    <a href="{% url 'comic:oldest' %}">&lt;&lt;&lt; Oldest</a>
+    &nbsp;&nbsp;
+    <a href="{% url 'comic:index' %}">Newest &gt;&gt;&gt;</a>
+    
     <br>
-    <a href="">Random</a>
+    
+    <a href="{% url 'comic:random' %}">Random</a>
+    
     <br>
+    
     <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
 {% else %}
     <p>Could not find the requested comic</p>
