@@ -83,6 +83,11 @@ def next_comic(request, current_id):
     except ObjectDoesNotExist:
         comics = []
 
+    try:
+        current_id = int(current_id)
+    except ValueError:
+        raise Http404("Invalid value passed as the current comic ID")
+
     current_idx = None
     for idx, cur_comic in enumerate(comics):
         if cur_comic.id == current_id:
@@ -95,8 +100,7 @@ def next_comic(request, current_id):
     try:
         nxt_comic = comics[current_idx + 1]
     except IndexError:
-        # Already at the most recent comic
-        return HttpResponse()
+        nxt_comic = comics[current_idx]
 
     template = loader.get_template('comic/index.html')
     context = {
@@ -114,6 +118,11 @@ def prev_comic(request, current_id):
     except ObjectDoesNotExist:
         comics = []
 
+    try:
+        current_id = int(current_id)
+    except ValueError:
+        raise Http404("Invalid value passed as the current comic ID")
+
     current_idx = None
     for idx, cur_comic in enumerate(comics):
         if cur_comic.id == current_id:
@@ -126,8 +135,7 @@ def prev_comic(request, current_id):
     try:
         prv_comic = comics[current_idx + 1]
     except IndexError:
-        # Already at the oldest comic
-        return HttpResponse()
+        prv_comic = comics[current_idx]
 
     template = loader.get_template('comic/index.html')
     context = {

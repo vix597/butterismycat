@@ -21,6 +21,10 @@
     <br>
     
     <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
+
+    <br>
+
+    <a href="{% url 'comic:archive' %}">Archive</a>
 {% else %}
     <p>Could not find the requested comic</p>
 {% endif %}
