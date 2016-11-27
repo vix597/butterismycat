@@ -10,138 +10,133 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Comic
 
+def get_newest_comic():
+    '''
+    Get the newest comic if there is one
+    '''
+    try:
+        return {'comic': Comic.objects.latest('pub_date')}
+    except BaseException:
+        return {'comic': None}
+
+def get_oldest_comic():
+    '''
+    Get the oldest comic if there is one
+    '''
+    try:
+        return {'comic': Comic.objects.order_by("pub_date")[0]} #puts oldest first
+    except BaseException:
+        return {'comic': None}
+
+def get_comics(newest_first=False):
+    '''
+    Get all the comics in configurable order
+    '''
+    if newest_first:
+        order_by = "-pub_date"
+    else:
+        order_by = "pub_date"
+
+    try:
+        return {'comics': Comic.objects.order_by(order_by)}
+    except BaseException:
+        return {'comics': []}
+
+def get_comic_by_id(comic_id):
+    '''
+    Get comic by ID if it exists
+    '''
+    if not isinstance(comic_id, int):
+        try:
+            comic_id = int(comic_id)
+        except ValueError:
+            return {'comic': None}
+
+    try:
+        return {'comic': Comic.objects.get(id=comic_id)}
+    except BaseException:
+        return {'comic': None}
+
+def get_next_comic(current_comic_id, newest_first=False):
+    '''
+    Used to get next or prev comic by changing 'newest_first' variable
+    '''
+    if newest_first:
+        order_by = "-pub_date"
+    else:
+        order_by = "pub_date"
+
+    if not isinstance(current_comic_id, int):
+        try:
+            current_comic_id = int(current_comic_id)
+        except ValueError:
+            return {'comic': None}
+
+    try:
+        comics = Comic.objects.order_by(order_by)
+    except ObjectDoesNotExist:
+        comics = []
+
+    current_idx = None
+    for idx, cur_comic in enumerate(comics):
+        if cur_comic.id == current_comic_id:
+            current_idx = idx
+            break
+
+    if current_idx is None:
+        return {'comic': None}
+
+    try:
+        return {'comic': comics[current_idx + 1]}
+    except IndexError:
+        return {'comic': comics[current_idx]}
+
 def index(request):
     '''
     Home page and load most recent comic
     '''
-    try:
-        latest_comic = Comic.objects.latest('pub_date')
-    except ObjectDoesNotExist:
-        latest_comic = None
-
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': latest_comic
-    }
-
+    context = get_newest_comic()
     return HttpResponse(template.render(context, request))
 
 def archive(request):
     '''
     Comic archive
     '''
-    try:
-        comics = Comic.objects.order_by('-pub_date') # Puts the newest first
-    except ObjectDoesNotExist:
-        comics = []
-
     template = loader.get_template('comic/archive.html')
-    context = {
-        'comics': comics
-    }
-
+    context = get_comics(newest_first=True)
     return HttpResponse(template.render(context, request))
 
 def comic(request, comic_id):
     '''
     Permalink for a specific comic
     '''
-    try:
-        permalink_comic = Comic.objects.get(id=comic_id)
-    except ObjectDoesNotExist:
-        permalink_comic = None
-
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': permalink_comic
-    }
-
+    context = get_comic_by_id(comic_id)
     return HttpResponse(template.render(context, request))
 
 def oldest(request):
     '''
     Get the oldest comic
     '''
-    try:
-        oldest_comic = Comic.objects.order_by('pub_date')[0]
-    except ObjectDoesNotExist:
-        oldest_comic = None
-
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': oldest_comic
-    }
-
+    context = get_oldest_comic()
     return HttpResponse(template.render(context, request))
 
 def next_comic(request, current_id):
     '''
     Get the next comic
     '''
-    try:
-        comics = Comic.objects.order_by("pub_date")
-    except ObjectDoesNotExist:
-        comics = []
-
-    try:
-        current_id = int(current_id)
-    except ValueError:
-        raise Http404("Invalid value passed as the current comic ID")
-
-    current_idx = None
-    for idx, cur_comic in enumerate(comics):
-        if cur_comic.id == current_id:
-            current_idx = idx
-            break
-
-    if current_idx is None:
-        raise Http404("Error retrieving next comic. Current comic not found.")
-
-    try:
-        nxt_comic = comics[current_idx + 1]
-    except IndexError:
-        nxt_comic = comics[current_idx]
-
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': nxt_comic
-    }
-
+    context = get_next_comic(current_id)
     return HttpResponse(template.render(context, request))
 
 def prev_comic(request, current_id):
     '''
     Get the previous comic
     '''
-    try:
-        comics = Comic.objects.order_by("-pub_date")
-    except ObjectDoesNotExist:
-        comics = []
-
-    try:
-        current_id = int(current_id)
-    except ValueError:
-        raise Http404("Invalid value passed as the current comic ID")
-
-    current_idx = None
-    for idx, cur_comic in enumerate(comics):
-        if cur_comic.id == current_id:
-            current_idx = idx
-            break
-
-    if current_idx is None:
-        raise Http404("Error retrieving previous comic. Current comic not found.")
-
-    try:
-        prv_comic = comics[current_idx + 1]
-    except IndexError:
-        prv_comic = comics[current_idx]
-
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': prv_comic
-    }
-
+    context = get_next_comic(current_id, newest_first=True) #switches it to get prev comic
     return HttpResponse(template.render(context, request))
 
 def random_comic(request):
@@ -151,10 +146,7 @@ def random_comic(request):
     random.seed(None) #Uses current system time
     r = random.randint(0, (Comic.objects.count() - 1))
 
-    try:
-        comics = Comic.objects.order_by("-pub_date")
-    except ObjectDoesNotExist:
-        comics = []
+    comics = get_comics()['comics']
 
     if len(comics) == 0:
         raise Http404("Cannot get random comic. No comics found.")
@@ -165,8 +157,5 @@ def random_comic(request):
         rnd_comic = comics[0]
 
     template = loader.get_template('comic/index.html')
-    context = {
-        'comic': rnd_comic
-    }
-
+    context = {'comic': rnd_comic}
     return HttpResponse(template.render(context, request))
