@@ -23,7 +23,8 @@ class Comic(models.Model):
         '''
         Returns if the comic was published in the last day
         '''
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
     def __str__(self):
         return "{}".format(self.title)
