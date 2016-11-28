@@ -1,30 +1,73 @@
+<html>
 {% if comic %}
-    <h1>{{ comic.title }}</h1>
-    <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}"/>
-    
-    <br>
-    
-    <a href="{% url 'comic:prev' comic.id %}">&lt;&lt; Prev</a>
-    &nbsp;&nbsp;
-    <a href="{% url 'comic:next' comic.id %}">Next &gt;&gt;</a>
-    
-    <br>
-    
-    <a href="{% url 'comic:oldest' %}">&lt;&lt;&lt; Oldest</a>
-    &nbsp;&nbsp;
-    <a href="{% url 'comic:index' %}">Newest &gt;&gt;&gt;</a>
-    
-    <br>
-    
-    <a href="{% url 'comic:random' %}">Random</a>
-    
-    <br>
-    
-    <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
 
-    <br>
+    <head>
+        <title>Butter Is My Cat</title>
 
-    <a href="{% url 'comic:archive' %}">Archive</a>
+        <!--For Facebook share button-->
+        <meta property="og:url"           content="http://www.butterismycat.com{% url 'comic:permalink' comic.id %}" />
+        <meta property="og:type"          content="website" />
+        <meta property="og:title"         content="Butter Is My Cat" />
+        <meta property="og:description"   content="Comics about meow meows and other things" />
+        <meta property="og:image"         content="http://www.butterismycat.com{{ comic.image.url }}" />
+    
+        <!-- Load Twitter widgets js for share button-->
+        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+        <!-- Load Facebook SDK for JavaScript-->
+        <div id="fb-root"></div>
+        <script>
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+    </head>
+    <body>
+        <h1>{{ comic.title }}</h1>
+        <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}"/>
+        
+        <br>
+        
+        <a href="{% url 'comic:prev' comic.id %}">&lt;&lt; Prev</a>
+        &nbsp;&nbsp;
+        <a href="{% url 'comic:next' comic.id %}">Next &gt;&gt;</a>
+        
+        <br>
+        
+        <a href="{% url 'comic:oldest' %}">&lt;&lt;&lt; Oldest</a>
+        &nbsp;&nbsp;
+        <a href="{% url 'comic:index' %}">Newest &gt;&gt;&gt;</a>
+        
+        <br>
+        
+        <a href="{% url 'comic:random' %}">Random</a>
+        
+        <br>
+        
+        <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
+
+        <br>
+
+        <a href="{% url 'comic:archive' %}">Archive</a>
+
+        <br>
+
+        <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
+        
+
+        <br>
+
+        <!-- Facebook share button -->
+        <div class="fb-share-button" 
+            data-href="http://www.butterismycat.com{% url 'comic:permalink' comic.id %}" 
+            data-layout="button_count">
+        </div>
+    </body>
 {% else %}
     <p>Could not find the requested comic</p>
 {% endif %}
+</html>
