@@ -5,11 +5,12 @@
         <title>Butter Is My Cat</title>
 
         <!--For Facebook share button-->
-        <meta property="og:url"           content="http://www.butterismycat.com{% url 'comic:permalink' comic.id %}" />
+        <link rel="canonical" href="http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" />
+        <meta property="og:url"           content="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}"/>
         <meta property="og:type"          content="website" />
         <meta property="og:title"         content="Butter Is My Cat" />
         <meta property="og:description"   content="Comics about meow meows and other things" />
-        <meta property="og:image"         content="http://www.butterismycat.com{{ comic.image.url }}" />
+        <meta property="og:image"         content="{{ request.scheme }}://{{ request.get_host }}{{ comic.image.url }}" />
     
         <!-- Load Twitter widgets js for share button-->
         <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -21,7 +22,7 @@
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1";
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
         </script>
@@ -58,14 +59,40 @@
 
         <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
         
-
         <br>
 
         <!-- Facebook share button -->
         <div class="fb-share-button" 
-            data-href="http://www.butterismycat.com{% url 'comic:permalink' comic.id %}" 
+            data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
             data-layout="button_count">
         </div>
+
+        <br>
+
+        <!--Enable when going live-->
+        <!--
+        <div id="disqus_thread"></div>
+        <script>
+            /**
+            *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+            *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+            var disqus_config = function () {
+                this.page.url = "http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
+                this.page.identifier = "{% url 'comic:permalink' comic.id %}";
+            };
+
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = '//butterismycat.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>
+            Please enable JavaScript to view the 
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+        -->
     </body>
 {% else %}
     <p>Could not find the requested comic</p>
