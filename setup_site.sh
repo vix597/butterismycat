@@ -18,6 +18,13 @@ python3 manage.py collectstatic
 if [ ! -d "/home/public/butterismycat/media" ];
 then
     mkdir /home/public/butterismycat/media
+    chmod a+w /home/public/butterismycat/media
 fi    
+
+if [ ! -d "/home/protected/database" ];
+then
+    mkdir /home/protected/database
+    chmod a+w /home/protected/database
+fi
 
 exit 0
