@@ -1,12 +1,29 @@
 {% extends 'comic/base.html' %}
 
-{% block content %}
+{% block head %}
+    {{ block.super }}
+    
     {% if comic %}
-        <div class="container-fluid">
-            <h1 class="text-center">{{ comic.title }}</h1>
-            <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}" class="img-responsive center-block" alt="Responsive image">
-            
-            <br>
+        <link rel="canonical" href="http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" />
+
+        <!--For Facebook share button-->
+        <meta property="og:url"           content="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}"/>
+        <meta property="og:type"          content="website" />
+        <meta property="og:title"         content="Butter Is My Cat" />
+        <meta property="og:description"   content="Comics about meow meows and other things" />
+        <meta property="og:image"         content="{{ request.scheme }}://{{ request.get_host }}{{ comic.image.url }}" />
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% if comic %}
+            <div class="row">
+                {% if comic.show_title %}
+                    <h1 class="text-center">{{ comic.title }}</h1>
+                {% endif %}
+                <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}" class="img-responsive center-block" alt="Responsive image">
+            </div>
             
             <a href="{% url 'comic:prev' comic.id %}">&lt;&lt; Prev</a>
             &nbsp;&nbsp;
@@ -46,9 +63,6 @@
 
             <div id="disqus_thread"></div>
             <script>
-                /**
-                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
                 var disqus_config = function () {
                     this.page.url = "http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
                     this.page.identifier = "{% url 'comic:permalink' comic.id %}";
@@ -65,8 +79,27 @@
                 Please enable JavaScript to view the 
                 <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
             </noscript>
-        </div>
-    {% else %}
-        <p>Could not find the requested comic</p>
-    {% endif %}
+        {% else %}
+            <p>Could not find the requested comic</p>
+            <!-- TODO: Make this error page have some neat comic -->
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    <!-- Load Twitter widgets js for share button-->
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <!-- Load Facebook SDK for share button-->
+    <div id="fb-root"></div>
+    <script>
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 {% endblock %}

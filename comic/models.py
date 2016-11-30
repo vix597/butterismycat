@@ -9,15 +9,13 @@ from django.db import models
 class Comic(models.Model):
     '''
     Database model for a comic strip
-    @image - The comic image to upload. Uploded to MEDIA_ROOT/comics/<year>/<month>/<day>
-    @hover_text - Text to display on mouse over
-    @title - The title of the comic
-    @pub_date - The date the comic was uploaded to the site
     '''
     image = models.ImageField(upload_to="comics/%Y/%m/%d")
     title = models.CharField(max_length=255, default="")
+    show_title = models.BooleanField(default=False)
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     hover_text = models.CharField(max_length=255, default="")
+    include_hover_text = models.BooleanField(default=True)
 
     def was_published_recently(self):
         '''
