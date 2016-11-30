@@ -11,7 +11,7 @@
         <meta property="og:type"          content="website" />
         <meta property="og:title"         content="Butter Is My Cat" />
         <meta property="og:description"   content="Comics about meow meows and other things" />
-        <meta property="og:image"         content="{{ request.scheme }}://{{ request.get_host }}{{ comic.image.url }}" />
+        <meta property="og:image"         content="http://{{ request.get_host }}{{ comic.image.url }}" />
     {% endif %}
 {% endblock %}
 
@@ -55,7 +55,7 @@
 
             <!-- Facebook share button -->
             <div class="fb-share-button" 
-                data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
+                data-href="http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
                 data-layout="button_count">
             </div>
 
