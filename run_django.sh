@@ -13,6 +13,7 @@ else
     pip3 install -r requirements.txt --upgrade
 fi
 
+python3 manage.py migrate
 python3 manage.py runserver
 
 exit 0
