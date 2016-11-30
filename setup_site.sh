@@ -27,4 +27,14 @@ then
     chmod a+w /home/protected/database
 fi
 
+python3 manage.py migrate
+
+if [ -f "/home/protected/database/db.sqlite3" ];
+then
+    chmod a+w /home/protected/database/db.sqlite3
+else
+    echo "ERROR: Could not modify permission on db file"
+    exit 1
+fi
+
 exit 0
