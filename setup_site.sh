@@ -18,20 +18,22 @@ python3 manage.py collectstatic
 if [ ! -d "/home/public/butterismycat/media" ];
 then
     mkdir /home/public/butterismycat/media
-    chmod a+w /home/public/butterismycat/media
+    chgrp web /home/public/butterismycat/media
 fi    
 
 if [ ! -d "/home/protected/database" ];
 then
     mkdir /home/protected/database
-    chmod a+w /home/protected/database
+    chgrp web /home/protected/database
+    chmod g+w /home/protected/database
 fi
 
 python3 manage.py migrate
 
 if [ -f "/home/protected/database/db.sqlite3" ];
 then
-    chmod a+w /home/protected/database/db.sqlite3
+    chgrp web /home/protected/database/db.sqlite3
+    chmod g+w /home/protected/database/db.sqlite3
 else
     echo "ERROR: Could not modify permission on db file"
     exit 1
