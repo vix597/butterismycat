@@ -1,12 +1,14 @@
 {% extends 'comic/base.html' %}
 
 {% block content %}
-    {% if comics %}
-        <ul>
-            {% for comic in comics %}
-                <li><a href="{% url 'comic:permalink' comic.id %}">{{ comic.title }}</a></li>
-            {% endfor %}
-        </ul>
+    {% if comics %}        
+        <div class="container-fluid">
+            <ul class="list-group text-center">
+                {% for comic in comics %}
+                    <li class="list-group-item"><a href="{% url 'comic:permalink' comic.id %}">{{ comic.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
     {% else %}
         <p>Sorry, No comics</p>
         <!-- TODO: Make this error page have some neat comic -->

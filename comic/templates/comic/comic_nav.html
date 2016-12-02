@@ -1,12 +1,25 @@
 {% if comic %}
         <div class="row text-center">
-            <a class="btn btn-default" href="{% url 'comic:prev' comic.id %}" role="button">&lt;&lt; Prev</a>
-            <a class="btn btn-default" href="{% url 'comic:random' %}" role="button">Random</a>
-            <a class="btn btn-default" href="{% url 'comic:next' comic.id %}" role="button">Next &gt;&gt;</a>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:prev' comic.id %}" role="button">&lt;&lt; Prev</a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:random' %}" role="button">Random</a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:next' comic.id %}" role="button">Next &gt;&gt;</a>
+            </div>
         </div>
+        <br>
         <div class="row text-center">
-            <a class="btn btn-default" href="{% url 'comic:oldest' %}" role="button">&lt;&lt;&lt; Oldest</a>
-            <a class="btn btn-default" href="{% url 'comic:permalink' comic.id %}" role="button">Permalink</a>
-            <a class="btn btn-default" href="{% url 'comic:index' %}" role="button">Newest &gt;&gt;&gt;</a>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:oldest' %}" role="button">&lt;&lt;&lt; Oldest</a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:permalink' comic.id %}" role="button">Permalink</a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-primary" href="{% url 'comic:index' %}" role="button">Newest &gt;&gt;&gt;</a>
+            </div>
         </div>
 {% endif %}

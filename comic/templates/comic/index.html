@@ -18,28 +18,40 @@
 {% block content %}
     <div class="container-fluid">
         {% if comic %}
-            <div class="row">
+
+            <div class="jumbotron">
+                {% include 'comic/comic_nav.html' %}
+                <br>
+
                 {% if comic.show_title %}
-                    <h1 class="text-center">{{ comic.title }}</h1>
-                {% else %}
-                    {% include 'comic/comic_nav.html' %}
+                    <h1 class="text-center">{{ comic.title }}</h1>                
                 {% endif %}
+
+                <!-- Comic Image loaded here -->
                 <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}" class="img-responsive center-block" alt="Responsive image">
             
+                <br>
                 {% include 'comic/comic_nav.html' %}
             </div>
-            
+
+            <hr>
+
             <!-- Twitter share button -->
-            <div>
-                <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
+            <div class="col-sm-6">
+                <div class="pull-right">
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
+                </div>
             </div>
 
             <!-- Facebook share button -->
-            <div class="fb-share-button" 
-                data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
-                data-layout="button_count">
+            <div class="col-sm-6">
+                <div class="fb-share-button pull-left" 
+                    data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
+                    data-layout="button_count">
+                </div>
             </div>
 
+            <!-- Disqus comment section -->
             <div id="disqus_thread"></div>
             <script>
                 var disqus_config = function () {
