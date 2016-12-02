@@ -1,0 +1,12 @@
+{% if comic %}
+        <div class="row text-center">
+            <a class="btn btn-default" href="{% url 'comic:prev' comic.id %}" role="button">&lt;&lt; Prev</a>
+            <a class="btn btn-default" href="{% url 'comic:random' %}" role="button">Random</a>
+            <a class="btn btn-default" href="{% url 'comic:next' comic.id %}" role="button">Next &gt;&gt;</a>
+        </div>
+        <div class="row text-center">
+            <a class="btn btn-default" href="{% url 'comic:oldest' %}" role="button">&lt;&lt;&lt; Oldest</a>
+            <a class="btn btn-default" href="{% url 'comic:permalink' comic.id %}" role="button">Permalink</a>
+            <a class="btn btn-default" href="{% url 'comic:index' %}" role="button">Newest &gt;&gt;&gt;</a>
+        </div>
+{% endif %}

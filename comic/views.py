@@ -107,6 +107,13 @@ def archive(request):
     context = get_comics(newest_first=True)
     return HttpResponse(template.render(context, request))
 
+def contact(request):
+    '''
+    Contact page
+    '''
+    template = loader.get_template('comic/contact.html')
+    return HttpResponse(template.render(request=request))
+
 def comic(request, comic_id):
     '''
     Permalink for a specific comic

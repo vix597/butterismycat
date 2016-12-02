@@ -4,14 +4,14 @@
     {{ block.super }}
     
     {% if comic %}
-        <link rel="canonical" href="http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" />
+        <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" />
 
         <!--For Facebook share button-->
         <meta property="og:url"           content="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}"/>
         <meta property="og:type"          content="website" />
         <meta property="og:title"         content="Butter Is My Cat" />
         <meta property="og:description"   content="Comics about meow meows and other things" />
-        <meta property="og:image"         content="http://{{ request.get_host }}{{ comic.image.url }}" />
+        <meta property="og:image"         content="{{ request.scheme }}://{{ request.get_host }}{{ comic.image.url }}" />
     {% endif %}
 {% endblock %}
 
@@ -21,50 +21,29 @@
             <div class="row">
                 {% if comic.show_title %}
                     <h1 class="text-center">{{ comic.title }}</h1>
+                {% else %}
+                    {% include 'comic/comic_nav.html' %}
                 {% endif %}
                 <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}" class="img-responsive center-block" alt="Responsive image">
+            
+                {% include 'comic/comic_nav.html' %}
             </div>
             
-            <a href="{% url 'comic:prev' comic.id %}">&lt;&lt; Prev</a>
-            &nbsp;&nbsp;
-            <a href="{% url 'comic:next' comic.id %}">Next &gt;&gt;</a>
-            
-            <br>
-            
-            <a href="{% url 'comic:oldest' %}">&lt;&lt;&lt; Oldest</a>
-            &nbsp;&nbsp;
-            <a href="{% url 'comic:index' %}">Newest &gt;&gt;&gt;</a>
-            
-            <br>
-            
-            <a href="{% url 'comic:random' %}">Random</a>
-            
-            <br>
-            
-            <a href="{% url 'comic:permalink' comic.id %}">Permalink</a>
-
-            <br>
-
-            <a href="{% url 'comic:archive' %}">Archive</a>
-
-            <br>
-
-            <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
-            
-            <br>
+            <!-- Twitter share button -->
+            <div>
+                <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
+            </div>
 
             <!-- Facebook share button -->
             <div class="fb-share-button" 
-                data-href="http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
+                data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
                 data-layout="button_count">
             </div>
-
-            <br>
 
             <div id="disqus_thread"></div>
             <script>
                 var disqus_config = function () {
-                    this.page.url = "http://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
+                    this.page.url = "{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
                     this.page.identifier = "{% url 'comic:permalink' comic.id %}";
                 };
 

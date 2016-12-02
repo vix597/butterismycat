@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'next/(?P<current_id>[0-9]+)/$', views.next_comic, name="next"),
     url(r'prev/(?P<current_id>[0-9]+)/$', views.prev_comic, name="prev"),
     url(r'random/', views.random_comic, name="random"),
-    url(r'archive/', views.archive, name="archive")
+    url(r'archive/', views.archive, name="archive"),
+    url(r'contact/', views.contact, name="contact")
 ]
