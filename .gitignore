@@ -7,6 +7,7 @@ web.cfg.json
 coverage/
 media/
 *.tar.gz
+settings_secret.py
 
 # Mac Filesystem garbage
 .DS_Store*
