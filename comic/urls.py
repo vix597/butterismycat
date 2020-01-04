@@ -9,7 +9,7 @@ app_name = "comic"
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('<comic_id>/', views.comic, name="permalink"),
+    path('permalink/<comic_id>/', views.comic, name="permalink"),
     path('oldest/', views.oldest, name="oldest"),
     path('next/<current_id>/', views.next_comic, name="next"),
     path('prev/<current_id>/', views.prev_comic, name="prev"),

@@ -2,7 +2,7 @@
 
 {% block head %}
     {{ block.super }}
-    
+
     {% if comic %}
         <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" />
 
@@ -24,12 +24,12 @@
                 <br>
 
                 {% if comic.show_title %}
-                    <h1 class="text-center">{{ comic.title }}</h1>                
+                    <h1 class="text-center">{{ comic.title }}</h1>
                 {% endif %}
 
                 <!-- Comic Image loaded here -->
                 <img src="{{ comic.image.url }}" hover="{{ comic.hover_text }}" class="img-responsive center-block" alt="Responsive image">
-            
+
                 <br>
                 {% include 'comic/comic_nav.html' %}
             </div>
@@ -45,8 +45,8 @@
 
             <!-- Facebook share button -->
             <div class="col-sm-6">
-                <div class="fb-share-button pull-left" 
-                    data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}" 
+                <div class="fb-share-button pull-left"
+                    data-href="{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}"
                     data-layout="button_count">
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 })();
             </script>
             <noscript>
-                Please enable JavaScript to view the 
+                Please enable JavaScript to view the
                 <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
             </noscript>
         {% else %}

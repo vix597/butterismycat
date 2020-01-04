@@ -140,10 +140,11 @@ def contact(request):
     return HttpResponse(template.render(request=request))
 
 
-def comic(request, comic_id=None):
+def comic(request, comic_id):
     '''
     Permalink for a specific comic
     '''
+    logger.error("comic() - Entered")
     template = loader.get_template('comic/index.html')
     context = get_comic_by_id(comic_id)
     return HttpResponse(template.render(context, request))
@@ -158,7 +159,7 @@ def oldest(request):
     return HttpResponse(template.render(context, request))
 
 
-def next_comic(request, current_id=None):
+def next_comic(request, current_id):
     '''
     Get the next comic
     '''
@@ -167,7 +168,7 @@ def next_comic(request, current_id=None):
     return HttpResponse(template.render(context, request))
 
 
-def prev_comic(request, current_id=None):
+def prev_comic(request, current_id):
     '''
     Get the previous comic
     '''
@@ -180,6 +181,7 @@ def random_comic(request):
     '''
     Get a random comic
     '''
+    logger.error("random_comic() - Entered")
     r = random.randint(0, (Comic.objects.count() - 1))
 
     comics = get_comics()['comics']
