@@ -1,18 +1,19 @@
 '''
 URL map for views
 '''
+from django.urls import path, include
 
-from django.conf.urls import url
 from . import views
 
 app_name = "comic"
+
 urlpatterns = [
-    url(r'^$', views.index, name="index"),
-    url(r'^(?P<comic_id>[0-9]+)/$', views.comic, name="permalink"),
-    url(r'oldest/', views.oldest, name="oldest"),
-    url(r'next/(?P<current_id>[0-9]+)/$', views.next_comic, name="next"),
-    url(r'prev/(?P<current_id>[0-9]+)/$', views.prev_comic, name="prev"),
-    url(r'random/', views.random_comic, name="random"),
-    url(r'archive/', views.archive, name="archive"),
-    url(r'contact/', views.contact, name="contact")
+    path('', views.index, name="index"),
+    path('<comic_id>/', views.comic, name="permalink"),
+    path('oldest/', views.oldest, name="oldest"),
+    path('next/<current_id>/', views.next_comic, name="next"),
+    path('prev/<current_id>/', views.prev_comic, name="prev"),
+    path('random/', views.random_comic, name="random"),
+    path('archive/', views.archive, name="archive"),
+    path('contact/', views.contact, name="contact")
 ]

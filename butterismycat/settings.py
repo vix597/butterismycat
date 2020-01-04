@@ -9,23 +9,32 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
 import os
 
-# pylint: disable=W0401,W0614
-from .settings_secret import *
+from .util import get_secret_key, ArgHider
+
+args = ArgHider.get()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEPLOY_PUBLIC_DIR = os.path.join("/", "home", "public", "butterismycat")
+DEPLOY_PROTECTED_DIR = os.path.join("/", "home", "protected")
+SECRET_KEY_FILE = os.path.join("/", "home", "protected", "django_secret_key")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not args.production
+SECRET_KEY = get_secret_key(SECRET_KEY_FILE)
+
+ALLOWED_HOSTS = ["butterismycat.com"]
 
 if DEBUG:
     ALLOWED_HOSTS = []
+else:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # Application definition
 
@@ -60,8 +69,6 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.template.context_processors.static',
-                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages'
             ],
@@ -71,21 +78,39 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'butterismycat.wsgi.application'
 
+# Logging
+
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'butterismycat': {
+                'handlers': ['console'],
+                'level': "DEBUG",
+            },
+        },
+    }
+
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 if DEBUG:
-    DATABASE_PATH = os.path.join(BASE_DIR, DB_NAME)
+    DATABASE_PATH = os.path.join(BASE_DIR, "db.sqlite3")
 else:
-    DATABASE_PATH = os.path.join(DEPLOY_PROTECTED_DIR, INTERMEDIATE_DB_DIR, DB_NAME)
+    DATABASE_PATH = os.path.join(DEPLOY_PROTECTED_DIR, "database", "db.sqlite3")
 
 DATABASES = {
     'default': {
-        'ENGINE': DB_ENGINE,
+        'ENGINE': "django.db.backends.sqlite3",
         'NAME': DATABASE_PATH,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -111,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = TZ
+TIME_ZONE = "America/New_York"
 
 USE_I18N = True
 
@@ -120,17 +145,17 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files and media files (CSS, JavaScript, Images, Comics)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
 
-# Media files (uploaded content)
+if not DEBUG:
+    STATIC_ROOT = os.path.join(DEPLOY_PUBLIC_DIR, "static")
 
 MEDIA_URL = '/media/'
 
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 else:
-    STATIC_ROOT = os.path.join(DEPLOY_PUBLIC_DIR, "static")
     MEDIA_ROOT = os.path.join(DEPLOY_PUBLIC_DIR, "media")

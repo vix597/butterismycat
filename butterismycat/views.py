@@ -1,11 +1,16 @@
 '''
-Main views for the website. Redirects to comic app
+Views for comic app
 '''
+import os
 
-from django.shortcuts import redirect
+from django.views.static import serve
 
-def index(_): #Passing _ variable to avoid linting warning
+from .settings import MEDIA_ROOT
+
+
+def serve_comic_image(request, year, month, day, filename):
     '''
-    Redirect to comic
+    Serve the actual comic image file
     '''
-    return redirect("/comic/", permanent=True)
+    file_path = os.path.join("comics", year, month, day, filename)
+    return serve(request, file_path, document_root=MEDIA_ROOT, show_indexes=False)

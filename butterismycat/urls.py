@@ -13,18 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import include, url
 from django.contrib import admin
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path, include
+from django.views.generic.base import RedirectView
 
 from . import views
 
-urlpatterns = [
-    url(r'^$', views.index, name="index"),
-    url(r'^comic/', include('comic.urls')),
-    url(r'^admin/', admin.site.urls),
-]
+index_view = RedirectView.as_view(url="/comic/", permanent=True)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = [
+    path('', index_view, name="index"),
+    path('comic/', include('comic.urls')),
+    path('media/comics/<year>/<month>/<day>/<filename>/', views.serve_comic_image),
+    path('admin/', admin.site.urls),
+]

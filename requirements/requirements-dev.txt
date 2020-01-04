@@ -1,0 +1,7 @@
+pylint
+pycodestyle
+tox
+pytest
+pytest-cov
+pytest-env
+pytest-django

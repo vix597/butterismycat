@@ -1,10 +1,14 @@
+#!/usr/bin/env python
 '''
 Command line tool for managing django project
 '''
 
-#!/usr/bin/env python
 import os
 import sys
+
+from butterismycat.util import ArgHider
+
+args = ArgHider.get()
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "butterismycat.settings")
@@ -24,4 +28,4 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    execute_from_command_line(sys.argv)
+    execute_from_command_line(args)

@@ -6,20 +6,20 @@ then
     source ./venv/bin/activate
 else
     echo; echo "***Create new venv***"; echo
-    virtualenv --system-site-packages ./venv 
+    python3 -m venv ./venv
     source ./venv/bin/activate
 
     # Only upgrade on initial setup.
-    pip3 install -r requirements.txt --upgrade
+    pip install -r requirements.txt
 fi
 
-python3 manage.py collectstatic
+python3 manage.py --production collectstatic
 
 if [ ! -d "/home/public/butterismycat/media" ];
 then
     mkdir /home/public/butterismycat/media
     chgrp web /home/public/butterismycat/media
-fi    
+fi
 
 if [ ! -d "/home/protected/database" ];
 then
@@ -28,7 +28,7 @@ then
     chmod g+w /home/protected/database
 fi
 
-python3 manage.py migrate
+python3 manage.py --production migrate
 
 if [ -f "/home/protected/database/db.sqlite3" ];
 then
