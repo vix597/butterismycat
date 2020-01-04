@@ -18,7 +18,10 @@ def get_newest_comic():
     Get the newest comic if there is one
     '''
     try:
-        return {'comic': Comic.objects.latest('pub_date')}
+        comic = Comic.objects.latest('pub_date')
+        comic.num_views += 1
+        comic.save()
+        return {'comic': comic}
     except Exception as e:
         logger.exception("get_newest_comic() - Failed: %s", str(e))
         return {'comic': None}
@@ -29,7 +32,10 @@ def get_oldest_comic():
     Get the oldest comic if there is one
     '''
     try:
-        return {'comic': Comic.objects.order_by("pub_date")[0]}  # Puts oldest first
+        comic = Comic.objects.order_by("pub_date")[0]  # Puts oldest first
+        comic.num_views += 1
+        comic.save()
+        return {'comic': comic}
     except Exception as e:
         logger.exception("get_oldest_comic() - Failed: %s", str(e))
         return {'comic': None}
@@ -66,7 +72,10 @@ def get_comic_by_id(comic_id):
             return {'comic': None}
 
     try:
-        return {'comic': Comic.objects.get(id=comic_id)}
+        comic = Comic.objects.get(id=comic_id)
+        comic.num_views += 1
+        comic.save()
+        return {'comic': comic}
     except Exception as e:
         logger.exception("get_comic_by_id() - Failed: %s", str(e))
         return {'comic': None}
@@ -108,10 +117,16 @@ def get_next_comic(current_comic_id, newest_first=False):
         return {'comic': None}
 
     try:
-        return {'comic': comics[current_idx + 1]}
+        comic = comics[current_idx + 1]
+        comic.num_views += 1
+        comic.save()
+        return {'comic': comic}
     except IndexError:
         logger.error("get_next_comic() - Error: No next comic in result array.")
-        return {'comic': comics[current_idx]}
+        comic = comics[current_idx]
+        comic.num_views += 1
+        comic.save()
+        return {'comic': comic}
 
 
 def index(request):
@@ -144,7 +159,6 @@ def comic(request, comic_id):
     '''
     Permalink for a specific comic
     '''
-    logger.error("comic() - Entered")
     template = loader.get_template('comic/index.html')
     context = get_comic_by_id(comic_id)
     return HttpResponse(template.render(context, request))
@@ -181,7 +195,6 @@ def random_comic(request):
     '''
     Get a random comic
     '''
-    logger.error("random_comic() - Entered")
     r = random.randint(0, (Comic.objects.count() - 1))
 
     comics = get_comics()['comics']
@@ -194,6 +207,10 @@ def random_comic(request):
     except IndexError:
         logger.error("random_comic() - Randomly selected an invalid index. Returning first comic.")
         rnd_comic = comics[0]
+
+    # Update the number of views for the comic
+    rnd_comic.num_views += 1
+    rnd_comic.save()
 
     template = loader.get_template('comic/index.html')
     context = {'comic': rnd_comic}
