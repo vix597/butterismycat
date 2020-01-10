@@ -1,0 +1,70 @@
+/* Background color for the site */
+body {
+    background-color: #D8C3A8;
+}
+
+/* Color of the navigation bar */
+.navbar {
+    background-color: #89512E;
+}
+
+/* Color of the navbar brand (the 'Butter Is My Cat' text) and nav links */
+.nav-link, .navbar-brand {
+    color: white;
+}
+
+/* Color of the navbar brand and nav links when hovered over */
+.nav-link:hover, .navbar-brand:hover {
+    color: lightgray;
+}
+
+/* Background color for the box containing the comic, buttons, and other page content */
+.page-content {
+    background-color: white;
+}
+
+/* Color of the comic navigation buttons (forward, back, random, first, last, etc.) */
+.comic-nav {
+    color: black;
+}
+
+/* Color of the comic navigation buttons when hovered over */
+.comic-nav:hover {
+    color: darkgray;
+    text-decoration: unset;
+}
+
+/* Size of the comic navigation buttons */
+.comic-nav {
+    font-size: 36px;
+}
+
+/* Make the size of the permalink and random buttons a bit smaller */
+.comic-nav-permalink, .comic-nav-random {
+    font-size: 28px;
+}
+
+/* Controls the style of the comic image on the page */
+.comic-img {
+    max-width: 80%;
+}
+
+/* Controls the style of the NSFW cover photo */
+.nsfw {
+    cursor: pointer;
+}
+
+/* Controls the display of the list of comics on the archive page */
+.archive-list {
+    max-width: 90%;
+}
+
+/* Styling for the archive sort button */
+.archive-sort {
+    cursor: pointer;
+}
+
+/* Behavior when hovering over the archive sort button */
+.archive-sort:hover {
+    text-decoration: underline;
+}

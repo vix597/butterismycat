@@ -42,9 +42,14 @@ class Comic(models.Model):
         help_text='If this is checked, the description will be accessible for this comic. Leave this unchecked to keep the description private.')
 
     #: Number of times the comic has been loaded
-    num_views = models.IntegerField(default=0)
+    num_views = models.IntegerField(verbose_name='Number of Views', default=0)
 
-    #: TODO - Number of times shared
+    #: Total number of shares accross all social media
+    num_shares = models.IntegerField(verbose_name='Number of Social Media Shares', default=0)
+
+    #: Whether the comic is or is not safe for work
+    is_nsfw = models.BooleanField(verbose_name="Is Not Safe For Work?", default=False,
+        help_text="If this is checked, the comic is NSFW and will be hidden by default. The user will need to click to reveal the comic.")
 
     def __str__(self):
         return "{}".format(self.title)

@@ -1,16 +1,56 @@
 {% extends 'comic/base.html' %}
 
-{% block content %}
+{% block body %}
     {% if comics %}
-        <div class="container-fluid">
-            <ul class="list-group text-center">
-                {% for comic in comics %}
-                    <li class="list-group-item"><a href="{% url 'comic:permalink' comic.id %}">{{ comic.title }}</a></li>
-                {% endfor %}
-            </ul>
+        <div class="container">
+            <div class="page-content">
+
+                <div class="py-2 mx-auto archive-list">
+                    <i class="fas fa-sort archive-sort mb-2" title="Sort by comic ID">Sort order</i>
+
+                    <ul class="list-group">
+                        {% for comic in comics %}
+                            <a href="{% url 'comic:permalink' comic.id %}" class="list-group-item list-group-item-action">
+                                #{{ comic.id }} {{ comic.title }}
+
+                                {% if comic.is_nsfw %}
+                                    <span class="badge badge-danger">NSFW</span>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     {% else %}
         <p>Sorry, No comics</p>
         <!-- TODO: Make this error page have some neat comic -->
     {% endif %}
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+
+    <script>
+        $(document).ready(function() {
+            let newestFirst = true;
+            let searchParams = new URLSearchParams(window.location.search);
+            if (searchParams.has('newest_first')) {
+                let newestFirstStr = searchParams.get('newest_first');
+                if (newestFirstStr === "true") {
+                    newestFirst = true;
+                } else {
+                    newestFirst = false;
+                }
+            }
+
+            $('.archive-sort').on("click", function(e) {
+                if (newestFirst) {
+                    window.location = "/comic/archive/?newest_first=false";
+                } else {
+                    window.location = "/comic/archive/?newest_first=true";
+                }
+            });
+        });
+    </script>
 {% endblock %}

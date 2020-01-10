@@ -4,129 +4,17 @@ Views for comic app
 import random
 import logging
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.template import loader
-from django.core.exceptions import ObjectDoesNotExist
 
+from .util import (
+    get_newest_comic, get_comic_by_id, get_comics,
+    get_next_comic, get_oldest_comic, comic_shared,
+    get_is_oldest_newest
+)
 from .models import Comic
 
 logger = logging.getLogger(__name__)
-
-
-def get_newest_comic():
-    '''
-    Get the newest comic if there is one
-    '''
-    try:
-        comic = Comic.objects.latest('pub_date')
-        comic.num_views += 1
-        comic.save()
-        return {'comic': comic}
-    except Exception as e:
-        logger.exception("get_newest_comic() - Failed: %s", str(e))
-        return {'comic': None}
-
-
-def get_oldest_comic():
-    '''
-    Get the oldest comic if there is one
-    '''
-    try:
-        comic = Comic.objects.order_by("pub_date")[0]  # Puts oldest first
-        comic.num_views += 1
-        comic.save()
-        return {'comic': comic}
-    except Exception as e:
-        logger.exception("get_oldest_comic() - Failed: %s", str(e))
-        return {'comic': None}
-
-
-def get_comics(newest_first=False):
-    '''
-    Get all the comics in configurable order
-    '''
-    if newest_first:
-        order_by = "-pub_date"
-    else:
-        order_by = "pub_date"
-
-    try:
-        return {'comics': Comic.objects.order_by(order_by)}
-    except Exception as e:
-        logger.exception("get_comics() - Failed: %s", str(e))
-        return {'comics': []}
-
-
-def get_comic_by_id(comic_id):
-    '''
-    Get comic by ID if it exists
-    '''
-    if comic_id is None:
-        return {'comic': None}
-
-    if not isinstance(comic_id, int):
-        try:
-            comic_id = int(comic_id)
-        except ValueError:
-            logger.error("get_comic_by_id() - Integer is required for comic ID.")
-            return {'comic': None}
-
-    try:
-        comic = Comic.objects.get(id=comic_id)
-        comic.num_views += 1
-        comic.save()
-        return {'comic': comic}
-    except Exception as e:
-        logger.exception("get_comic_by_id() - Failed: %s", str(e))
-        return {'comic': None}
-
-
-def get_next_comic(current_comic_id, newest_first=False):
-    '''
-    Used to get next or prev comic by changing 'newest_first' variable
-    '''
-    if current_comic_id is None:
-        return {'comic': None}
-
-    if newest_first:
-        order_by = "-pub_date"
-    else:
-        order_by = "pub_date"
-
-    if not isinstance(current_comic_id, int):
-        try:
-            current_comic_id = int(current_comic_id)
-        except ValueError:
-            logger.error("get_next_comic() - Integer is required for comic ID.")
-            return {'comic': None}
-
-    try:
-        comics = Comic.objects.order_by(order_by)
-    except ObjectDoesNotExist:
-        logger.debug("get_next_comic() - This must be the last comic. No next comic.")
-        comics = []
-
-    current_idx = None
-    for idx, cur_comic in enumerate(comics):
-        if cur_comic.id == current_comic_id:
-            current_idx = idx
-            break
-
-    if current_idx is None:
-        logger.error("get_next_comic() - Error: Could not find current comic in site.")
-        return {'comic': None}
-
-    try:
-        comic = comics[current_idx + 1]
-        comic.num_views += 1
-        comic.save()
-        return {'comic': comic}
-    except IndexError:
-        logger.error("get_next_comic() - Error: No next comic in result array.")
-        comic = comics[current_idx]
-        comic.num_views += 1
-        comic.save()
-        return {'comic': comic}
 
 
 def index(request):
@@ -142,8 +30,14 @@ def archive(request):
     '''
     Comic archive
     '''
+    newest_first = request.GET.get('newest_first', "true").lower().strip()
+    if newest_first in ("true", "1", "yes", "on"):
+        newest_first = True
+    else:
+        newest_first = False
+
     template = loader.get_template('comic/archive.html')
-    context = get_comics(newest_first=True)
+    context = get_comics(newest_first=newest_first)
     return HttpResponse(template.render(context, request))
 
 
@@ -195,6 +89,7 @@ def random_comic(request):
     '''
     Get a random comic
     '''
+    context = {}
     r = random.randint(0, (Comic.objects.count() - 1))
 
     comics = get_comics()['comics']
@@ -211,7 +106,25 @@ def random_comic(request):
     # Update the number of views for the comic
     rnd_comic.num_views += 1
     rnd_comic.save()
+    context['comic'] = rnd_comic
+    context.update(get_is_oldest_newest(rnd_comic.id))
 
     template = loader.get_template('comic/index.html')
-    context = {'comic': rnd_comic}
     return HttpResponse(template.render(context, request))
+
+
+def share(request):
+    '''
+    The comic was shared
+    '''
+    if request.method != 'POST':
+        return JsonResponse(status=405, data={'error': 'Invalid method.'})
+
+    comic_id = request.POST.get('comic_id', None)
+
+    if not comic_id:
+        return JsonResponse(status=405, data={'error': 'Invalid data.'})
+
+    comic_shared(comic_id)
+
+    return JsonResponse(status=200, data={})
