@@ -15,6 +15,5 @@ urlpatterns = [
     path('prev/<current_id>/', views.prev_comic, name="prev"),
     path('random/', views.random_comic, name="random"),
     path('archive/', views.archive, name="archive"),
-    path('contact/', views.contact, name="contact"),
-    path('share/', views.share, name="share")
+    path('contact/', views.contact, name="contact")
 ]

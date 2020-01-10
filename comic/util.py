@@ -168,23 +168,3 @@ def get_next_comic(current_comic_id, newest_first=False):
         ret['comic'] = comic
         ret.update(get_is_oldest_newest(comic.id))
         return ret
-
-
-def comic_shared(comic_id):
-    if comic_id is None:
-        logger.error("comic_shared() - No comic ID specified.")
-        return
-
-    if not isinstance(comic_id, int):
-        try:
-            comic_id = int(comic_id)
-        except ValueError:
-            logger.error("comic_shared() - Integer is required for comic ID.")
-            return
-
-    try:
-        comic = Comic.objects.get(id=comic_id)
-        comic.num_shares += 1  # Increment total number of social media shares
-        comic.save()
-    except Exception as e:
-        logger.exception("comic_shared() - Failed: %s", str(e))

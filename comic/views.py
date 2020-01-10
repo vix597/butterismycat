@@ -9,8 +9,7 @@ from django.template import loader
 
 from .util import (
     get_newest_comic, get_comic_by_id, get_comics,
-    get_next_comic, get_oldest_comic, comic_shared,
-    get_is_oldest_newest
+    get_next_comic, get_oldest_comic, get_is_oldest_newest
 )
 from .models import Comic
 
@@ -111,20 +110,3 @@ def random_comic(request):
 
     template = loader.get_template('comic/index.html')
     return HttpResponse(template.render(context, request))
-
-
-def share(request):
-    '''
-    The comic was shared
-    '''
-    if request.method != 'POST':
-        return JsonResponse(status=405, data={'error': 'Invalid method.'})
-
-    comic_id = request.POST.get('comic_id', None)
-
-    if not comic_id:
-        return JsonResponse(status=405, data={'error': 'Invalid data.'})
-
-    comic_shared(comic_id)
-
-    return JsonResponse(status=200, data={})
