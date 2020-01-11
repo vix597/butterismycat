@@ -44,11 +44,13 @@
 
                 <!-- Disqus comment section. Populated by JavaScript -->
                 <div id="disqus_thread"></div>
-            {% else %}
-                <p>Could not find the requested comic</p>
-                <!-- TODO: Make this error page have some neat comic -->
-            {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <div class="page-content jumbotron text-center">
+                <p>Could not find the requested comic. There may be no comics yet.</p>
+            </div>
+            <!-- TODO: Make this error page have some neat comic -->
+        {% endif %}
     </div>
 {% endblock %}
 
