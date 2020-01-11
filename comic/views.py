@@ -4,7 +4,7 @@ Views for comic app
 import random
 import logging
 
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponse, Http404
 from django.template import loader
 
 from .util import (
@@ -30,11 +30,7 @@ def archive(request):
     Comic archive
     '''
     newest_first = request.GET.get('newest_first', "true").lower().strip()
-    if newest_first in ("true", "1", "yes", "on"):
-        newest_first = True
-    else:
-        newest_first = False
-
+    newest_first = bool(newest_first in ("true", "1", "yes", "on"))
     template = loader.get_template('comic/archive.html')
     context = get_comics(newest_first=newest_first)
     return HttpResponse(template.render(context, request))
@@ -89,7 +85,7 @@ def random_comic(request):
     Get a random comic
     '''
     context = {}
-    r = random.randint(0, (Comic.objects.count() - 1))
+    r = random.randint(0, (Comic.objects.count() - 1))  # pylint: disable=E1101
 
     comics = get_comics()['comics']
 

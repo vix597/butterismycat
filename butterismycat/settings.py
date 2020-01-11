@@ -31,7 +31,7 @@ SECRET_KEY = get_secret_key(SECRET_KEY_FILE)
 ALLOWED_HOSTS = ["butterismycat.com"]
 
 if DEBUG:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ["192.168.1.134", "localhost", "*"]
 else:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True

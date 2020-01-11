@@ -4,7 +4,6 @@ Command line tool for managing django project
 '''
 
 import os
-import sys
 
 from butterismycat.util import ArgHider
 

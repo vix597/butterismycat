@@ -1,28 +1,30 @@
 {% if comic %}
-    <div class="row justify-content-md-center">
+    <ul class="nav justify-content-center">
+
         {% if not is_oldest %}
-            <div class="col-sm-auto">
-                <a class="fas fa-fast-backward comic-nav" title="Oldest" href="{% url 'comic:oldest' %}"></a>
-            </div>
-            <div class="col-sm-auto">
-                <a class="fas fa-step-backward comic-nav" title="Previous" href="{% url 'comic:prev' comic.id %}"></a>
-            </div>
+            <li class="nav-item">
+                <a class="nav-link fas fa-fast-backward comic-nav" title="Oldest" href="{% url 'comic:oldest' %}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fas fa-step-backward comic-nav" title="Previous" href="{% url 'comic:prev' comic.id %}"></a>
+            </li>
         {% endif %}
 
-        <div class="col-sm-auto">
-            <a class="fas fa-random comic-nav comic-nav-random" title="Random Comic" href="{% url 'comic:random' %}"></a>
-        </div>
-        <div class="col-sm-auto">
-            <a class="fas fa-link comic-nav comic-nav-permalink" title="Permalink" href="{% url 'comic:permalink' comic.id %}"></a>
-        </div>
+        <li class="nav-item">
+            <a class="nav-link fas fa-random comic-nav comic-nav-random" title="Random Comic" href="{% url 'comic:random' %}"></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fas fa-link comic-nav comic-nav-permalink" title="Permalink" href="{% url 'comic:permalink' comic.id %}"></a>
+        </li>
 
         {% if not is_newest %}
-            <div class="col-sm-auto">
-                <a class="fas fa-step-forward comic-nav" title="Next" href="{% url 'comic:next' comic.id %}"></a>
-            </div>
-            <div class="col-sm-auto">
-                <a class="fas fa-fast-forward comic-nav" title="Newest" href="{% url 'comic:index' %}"></a>
-            </div>
+            <li class="nav-item">
+                <a class="nav-link fas fa-step-forward comic-nav" title="Next" href="{% url 'comic:next' comic.id %}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fas fa-fast-forward comic-nav" title="Newest" href="{% url 'comic:index' %}"></a>
+            </li>
         {% endif %}
-    </div>
+
+    </ul>
 {% endif %}

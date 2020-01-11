@@ -2,7 +2,6 @@
 Helpful utilities for butterismycat comic app
 '''
 import logging
-from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -22,8 +21,10 @@ def get_is_oldest_newest(current_comic_id):
     }
 
     try:
-        oldest_comic = Comic.objects.order_by("pub_date")[0]  # Puts oldest first
-        newest_comic = Comic.objects.latest('pub_date')
+        # Puts oldest first
+        oldest_comic = Comic.objects.order_by("pub_date")[0]  # pylint: disable=E1101
+        # Puts newest first
+        newest_comic = Comic.objects.latest('pub_date')  # pylint: disable=E1101
     except Exception as e:
         logger.exception("get_is_oldest_newest() - Failed: %s", str(e))
         return ret
@@ -41,7 +42,7 @@ def get_newest_comic():
     Get the newest comic if there is one
     '''
     try:
-        comic = Comic.objects.latest('pub_date')
+        comic = Comic.objects.latest('pub_date')  # pylint: disable=E1101
         comic.num_views += 1
         comic.save()
         return {
@@ -59,7 +60,8 @@ def get_oldest_comic():
     Get the oldest comic if there is one
     '''
     try:
-        comic = Comic.objects.order_by("pub_date")[0]  # Puts oldest first
+        # Puts oldest first
+        comic = Comic.objects.order_by("pub_date")[0]  # pylint: disable=E1101
         comic.num_views += 1
         comic.save()
         return {
@@ -82,7 +84,7 @@ def get_comics(newest_first=False):
         order_by = "pub_date"
 
     try:
-        return {'comics': Comic.objects.order_by(order_by)}
+        return {'comics': Comic.objects.order_by(order_by)}  # pylint: disable=E1101
     except Exception as e:
         logger.exception("get_comics() - Failed: %s", str(e))
         return {'comics': []}
@@ -105,7 +107,7 @@ def get_comic_by_id(comic_id):
             return {'comic': None}
 
     try:
-        comic = Comic.objects.get(id=comic_id)
+        comic = Comic.objects.get(id=comic_id)  # pylint: disable=E1101
         comic.num_views += 1
         comic.save()
         ret['comic'] = comic
@@ -138,7 +140,7 @@ def get_next_comic(current_comic_id, newest_first=False):
             return {'comic': None}
 
     try:
-        comics = Comic.objects.order_by(order_by)
+        comics = Comic.objects.order_by(order_by)  # pylint: disable=E1101
     except ObjectDoesNotExist:
         logger.debug("get_next_comic() - This must be the last comic. No next comic.")
         comics = []

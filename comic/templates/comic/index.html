@@ -29,6 +29,12 @@
                 <h1 id="comic-title"></h1>
                 <img id="comic-img" class="comic-img">
 
+                {% if comic.include_hover_text %}
+                    <div class="alert alert-dark text-center hovertext-alert mt-2 mx-auto">
+                        Click for subtext
+                    </div>
+                {% endif %}
+
                 <!-- Bottom of comic navigation buttons -->
                 <div class="mt-3">
                     {% include 'comic/comic_nav.html' %}
@@ -51,89 +57,99 @@
 
     {% load static %}
 
-    <!-- Setup some variables -->
-    <script>
-        var comic_hover_text = "";
-        var comic_img_url = "";
-        var comic_nsfw_url = "{% static 'comic/img/nsfw.jpeg' %}";
-        var nsfw_str = "This comic is not safe for work. Click to reveal."
-        var comic_title = "";
-        var comic_description = "";
-        var is_nsfw = false;
+    {% if comic %}
+        <!-- Setup some variables -->
+        <script>
+            var comic_hover_text = "";
+            var comic_img_url = "";
+            var comic_nsfw_url = "{% static 'comic/img/nsfw.jpeg' %}";
+            var nsfw_str = "This comic is not safe for work. Click to reveal."
+            var comic_title = "";
+            var comic_description = "";
+            var is_nsfw = false;
 
-        {% if comic %}
-            {% if comic.include_hover_text %}
-                comic_hover_text = "{{ comic.hover_text }}";
+            {% if comic %}
+                {% if comic.include_hover_text %}
+                    comic_hover_text = "{{ comic.hover_text }}";
+                {% endif %}
+
+                {% if comic.show_title %}
+                    comic_title = "{{ comic.title }}";
+                {% endif %}
+
+                {% if comic.show_description %}
+                    comic_description = "{{ comic.description }}";
+                {% endif %}
+
+                {% if comic.is_nsfw %}
+                    is_nsfw = true;
+                {% endif %}
+
+                comic_img_url = "{{ comic.image.url }}";
             {% endif %}
+        </script>
 
-            {% if comic.show_title %}
-                comic_title = "{{ comic.title }}";
-            {% endif %}
-
-            {% if comic.show_description %}
-                comic_description = "{{ comic.description }}";
-            {% endif %}
-
-            {% if comic.is_nsfw %}
-                is_nsfw = true;
-            {% endif %}
-
-            comic_img_url = "{{ comic.image.url }}";
-        {% endif %}
-    </script>
-
-    <!-- Our page load script -->
-    <script>
-        $(document).ready(function() {
-            // Handle initial setup if the image is NSFW
-            if (is_nsfw) {
-                $("#comic-title").text("NSFW");
-                $("#comic-img").addClass("nsfw");  // Add nsfw class for cursor styling
-                $("#comic-img").attr("title", nsfw_str);
-                $("#comic-img").attr("alt", nsfw_str);
-                $("#comic-img").attr("src", comic_nsfw_url);
-            } else {
-                $("#comic-title").text(comic_title);
-                $("#comic-img").attr("src", comic_img_url);
-                $("#comic-img").attr("title", comic_hover_text);
-                $("#comic-img").attr("alt", comic_hover_text);
-            }
-
-            // Handle displaying or hiding NSFW images on click
-            $(".nsfw").on("click", function(e) {
-                var cur_img_url = $(e.target).attr("src");
-
-                if (cur_img_url === comic_img_url) {  // Re-hide the image
+        <!-- Our page load script -->
+        <script>
+            $(document).ready(function() {
+                // Handle initial setup if the image is NSFW
+                if (is_nsfw) {
                     $("#comic-title").text("NSFW");
+                    $("#comic-img").addClass("nsfw");  // Add nsfw class for cursor styling
                     $("#comic-img").attr("title", nsfw_str);
                     $("#comic-img").attr("alt", nsfw_str);
-                    $(e.target).attr("src", comic_nsfw_url);
-                } else {  // Display the image
+                    $("#comic-img").attr("src", comic_nsfw_url);
+                } else {
                     $("#comic-title").text(comic_title);
-                    $(e.target).attr("title", comic_hover_text);
-                    $(e.target).attr("alt", comic_hover_text);
-                    $(e.target).attr("src", comic_img_url);
+                    $("#comic-img").attr("src", comic_img_url);
+                    $("#comic-img").attr("title", comic_hover_text);
+                    $("#comic-img").attr("alt", comic_hover_text);
                 }
+
+                // Handle displaying or hiding NSFW images on click
+                $(".nsfw").on("click", function(e) {
+                    var cur_img_url = $(e.target).attr("src");
+
+                    if (cur_img_url === comic_img_url) {  // Re-hide the image
+                        $("#comic-title").text("NSFW");
+                        $("#comic-img").attr("title", nsfw_str);
+                        $("#comic-img").attr("alt", nsfw_str);
+                        $(e.target).attr("src", comic_nsfw_url);
+                    } else {  // Display the image
+                        $("#comic-title").text(comic_title);
+                        $(e.target).attr("title", comic_hover_text);
+                        $(e.target).attr("alt", comic_hover_text);
+                        $(e.target).attr("src", comic_img_url);
+                    }
+                });
+
+                $(".alert").on("click", function(e) {
+                    if (comic_hover_text) {
+                        $(e.target).text(comic_hover_text);
+                    } else {
+                        $(e.target).text("No subtext");
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
-    <!-- Enable the Disqus comment section -->
-    <script>
-        var disqus_config = function () {
-            this.page.url = "{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
-            this.page.identifier = "{% url 'comic:permalink' comic.id %}";
-        };
+        <!-- Enable the Disqus comment section -->
+        <script>
+            var disqus_config = function () {
+                this.page.url = "{{ request.scheme }}://{{ request.get_host }}{% url 'comic:permalink' comic.id %}";
+                this.page.identifier = "{% url 'comic:permalink' comic.id %}";
+            };
 
-        (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document, s = d.createElement('script');
-            s.src = '//butterismycat.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <noscript>
-        Please enable JavaScript to view the
-        <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-    </noscript>
+            (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = '//butterismycat.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>
+            Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    {% endif %}
 {% endblock %}

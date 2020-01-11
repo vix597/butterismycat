@@ -9,7 +9,7 @@ body {
 }
 
 /* Color of the navbar brand (the 'Butter Is My Cat' text) and nav links */
-.nav-link, .navbar-brand {
+.nav-link, .navbar-brand, .nav-toggle-icon {
     color: white;
 }
 
@@ -36,21 +36,21 @@ body {
 
 /* Size of the comic navigation buttons */
 .comic-nav {
-    font-size: 36px;
+    font-size: 1.5rem;
 }
 
 /* Make the size of the permalink and random buttons a bit smaller */
 .comic-nav-permalink, .comic-nav-random {
-    font-size: 28px;
+    font-size: 1rem;
 }
 
 /* Controls the style of the comic image on the page */
-.comic-img {
+.comic-img, .hovertext-alert {
     max-width: 80%;
 }
 
 /* Controls the style of the NSFW cover photo */
-.nsfw {
+.nsfw, .hovertext-alert {
     cursor: pointer;
 }
 
